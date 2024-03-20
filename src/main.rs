@@ -17,13 +17,6 @@ async fn main() -> std::io::Result<()> {
 
     let config = web::Data::new(Config::new());
     let clone_config = Arc::clone(&config);
-    // tokio::spawn(async move {
-    //     loop {
-    //         dbg!(clone_config.lock().await.total_clients_connection().await);
-    //         dbg!(clone_config.lock().await.total_clients_wait().await);
-    //         tokio::time::sleep(Duration::from_millis(100)).await;
-    //     }
-    // });
 
     tokio::spawn(async move {
         signal::ctrl_c().await.expect("failed to listen for event");
