@@ -84,10 +84,6 @@ impl Config {
             .is_some()
     }
 
-    pub async fn total_clients_wait(&self) -> usize {
-        self.wait_clients.len()
-    }
-
     pub async fn client_connect(&mut self, client: Client) {
         loop {
             if self.exist_connect_client(&client).await {

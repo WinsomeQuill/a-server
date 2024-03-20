@@ -12,7 +12,7 @@ use crate::utils::utils::{calculating, generate_delay};
 
 #[post("/work")]
 pub async fn work(config: web::Data<Arc<Mutex<Config>>>, req: HttpRequest, mut payload: Payload) -> impl Responder {
-    let mut client = Client::new(req.peer_addr().unwrap().port().to_string());
+    let client = Client::new(req.peer_addr().unwrap().port().to_string());
 
     config.clone().lock().await.client_connect(client.clone()).await;
 

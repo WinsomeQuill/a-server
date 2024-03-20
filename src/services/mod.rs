@@ -1,7 +1,4 @@
-use std::str::FromStr;
-use actix_web::HttpRequest;
 use actix_web::web::{BytesMut, Payload};
-use qstring::QString;
 use serde::de;
 use futures_util::StreamExt;
 
@@ -31,21 +28,6 @@ pub async fn convert_body_to_struct<'a, T>(bytes_mut: &'a BytesMut) -> Result<T,
     };
 
     Ok(item)
-}
-
-pub async fn get_query_param<T: FromStr>(req: &HttpRequest, query_key: &str) -> Result<T, String> {
-    let query_str = req.query_string();
-    let qs = QString::from(query_str);
-
-    let result = match qs.get(query_key) {
-        Some(o) => match o.parse::<T>() {
-            Ok(o) => o,
-            Err(_) => return Err(format!("Invalid query type for {}!", &query_key)),
-        },
-        None => return Err(format!("Not found {}!", &query_key)),
-    };
-
-    Ok(result)
 }
 
 pub mod not_found;
