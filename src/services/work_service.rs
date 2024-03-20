@@ -14,7 +14,11 @@ use crate::utils::utils::{calculating, generate_delay};
 pub async fn work(config: web::Data<Arc<Mutex<Config>>>, req: HttpRequest, mut payload: Payload) -> impl Responder {
     let client = Client::new(req.peer_addr().unwrap().port().to_string());
 
-    config.clone().lock().await.client_connect(client.clone()).await;
+    loop {
+        if config.clone().lock().await.try_client_connect(client.clone()).await {
+            break;
+        }
+    }
 
     let start_time = Utc::now();
 

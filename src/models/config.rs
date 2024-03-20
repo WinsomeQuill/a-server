@@ -84,36 +84,35 @@ impl Config {
             .is_some()
     }
 
-    pub async fn client_connect(&mut self, client: Client) {
-        loop {
-            if self.exist_connect_client(&client).await {
-                let index = self.active_clients
-                    .iter()
-                    .position(|x| x == &client)
-                    .unwrap();
+    pub async fn try_client_connect(&mut self, client: Client) -> bool {
+        if self.exist_connect_client(&client).await {
+            let index = self.active_clients
+                .iter()
+                .position(|x| x == &client)
+                .unwrap();
 
-                self.active_clients[index].active_requests += 1;
-                break;
-            }
-
-            if self.exist_connect_client_wait(&client).await && self.total_clients_connection().await >= 5 {
-                continue;
-            }
-
-            if !self.exist_connect_client_wait(&client).await && self.total_clients_connection().await >= 5 {
-                self.add_client_wait(client.clone()).await;
-                continue;
-            }
-
-            if self.exist_connect_client_wait(&client).await && self.total_clients_connection().await < 5 {
-                if self.add_client(client.clone()).await.is_ok() {
-                    self.remove_client_wait(&client).await;
-                    break;
-                }
-            }
-
-            self.add_client_wait(client.clone()).await;
+            self.active_clients[index].active_requests += 1;
+            return true;
         }
+
+        if self.exist_connect_client_wait(&client).await && self.total_clients_connection().await >= 5 {
+            return false;
+        }
+
+        if !self.exist_connect_client_wait(&client).await && self.total_clients_connection().await >= 5 {
+            self.add_client_wait(client.clone()).await;
+            return false;
+        }
+
+        if self.exist_connect_client_wait(&client).await && self.total_clients_connection().await < 5 {
+            if self.add_client(client.clone()).await.is_ok() {
+                self.remove_client_wait(&client).await;
+                return true;
+            }
+        }
+
+        self.add_client_wait(client.clone()).await;
+        false
     }
 
     pub async fn add_count_request(&mut self, client: &Client) {
