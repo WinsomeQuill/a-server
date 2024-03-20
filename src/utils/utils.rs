@@ -6,7 +6,7 @@ use crate::models::dto::calculator_dto::{CalculatorDto, Operation};
 
 pub async fn generate_delay() {
     let mut rng = rand::thread_rng();
-    let time_delay = rng.gen_range(4000..5000);
+    let time_delay = rng.gen_range(100..500);
 
     tokio::time::sleep(Duration::from_millis(time_delay)).await;
 }
