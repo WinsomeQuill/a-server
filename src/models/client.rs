@@ -4,7 +4,7 @@ use crate::models::connection_stats::ConnectionStats;
 #[derive(Debug, Clone)]
 pub struct Client {
     pub address: String,
-    connection_stats: ConnectionStats,
+    pub connection_stats: ConnectionStats,
     pub active_requests: u32,
 }
 
@@ -49,17 +49,6 @@ impl Client {
         }
 
         self.connection_stats.avg_processing_time = (connection_stats.max_processing_time + connection_stats.min_processing_time) / 2;
-    }
-
-    pub async fn print_stats_report(&self) {
-        let connection_stats = &self.connection_stats;
-        let min = connection_stats.min_processing_time;
-        let max = connection_stats.max_processing_time;
-        let avg = connection_stats.avg_processing_time;
-
-        println!("Max request time: {max} ms");
-        println!("Min request time: {min} ms");
-        println!("Avg request time: {avg} ms");
     }
 }
 

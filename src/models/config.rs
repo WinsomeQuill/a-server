@@ -137,10 +137,17 @@ impl Config {
         let total_requests = client.total_count_request().await;
         let session_time = client.get_session_time().await.num_milliseconds();
 
+        let connection_stats = &client.connection_stats;
+        let min = connection_stats.min_processing_time;
+        let max = connection_stats.max_processing_time;
+        let avg = connection_stats.avg_processing_time;
+
         println!("Client {} is disconnected!", client.address);
         println!("Requests: {total_requests}");
+        println!("Max request time: {max} ms");
+        println!("Min request time: {min} ms");
+        println!("Avg request time: {avg} ms");
         println!("Session time: {session_time} ms");
-        client.print_stats_report().await;
         println!("\n");
     }
 
