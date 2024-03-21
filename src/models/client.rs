@@ -1,4 +1,4 @@
-use chrono::{TimeDelta, Utc};
+use tokio::time::Duration;
 use crate::models::connection_stats::ConnectionStats;
 
 #[derive(Debug, Clone)]
@@ -28,12 +28,12 @@ impl Client {
         self.connection_stats.request_count
     }
 
-    pub async fn get_session_time(&self) -> TimeDelta {
-        Utc::now() - self.connection_stats.session_time
+    pub async fn get_session_time(&self) -> Duration {
+        self.connection_stats.session_time.elapsed()
     }
 
-    pub async fn update_stats_time_request(&mut self, time_delta: TimeDelta) {
-        let milliseconds = time_delta.num_milliseconds();
+    pub async fn update_stats_time_request(&mut self, duration: Duration) {
+        let milliseconds = duration.as_millis();
         let connection_stats = &mut self.connection_stats;
 
         if connection_stats.min_processing_time == 0 {

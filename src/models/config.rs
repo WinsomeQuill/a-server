@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use chrono::TimeDelta;
+use tokio::time::Duration;
 use tokio::sync::Mutex;
 use crate::models::client::Client;
 use crate::models::server_connection_stats::ServerConnectionStats;
@@ -124,18 +124,18 @@ impl Config {
         self.active_clients[index].add_count_request().await;
     }
 
-    pub async fn update_stats_time_request(&mut self, client: &Client, time_delta: TimeDelta) {
+    pub async fn update_stats_time_request(&mut self, client: &Client, duration: Duration) {
         let index = self.active_clients
             .iter()
             .position(|x| x == client)
             .unwrap();
 
-        self.active_clients[index].update_stats_time_request(time_delta).await;
+        self.active_clients[index].update_stats_time_request(duration).await;
     }
 
     pub async fn print_client_stats(&self, client: &Client) {
         let total_requests = client.total_count_request().await;
-        let session_time = client.get_session_time().await.num_milliseconds();
+        let session_time = client.get_session_time().await.as_millis();
 
         let connection_stats = &client.connection_stats;
         let min = connection_stats.min_processing_time;

@@ -2,17 +2,17 @@ use crate::models::client::Client;
 
 pub struct ServerConnectionStats {
     total_handled_clients: u64,
-    min_session_time_client: i64,
-    max_session_time_client: i64,
-    avg_session_time_client: i64,
+    min_session_time_client: u128,
+    max_session_time_client: u128,
+    avg_session_time_client: u128,
 }
 
 impl ServerConnectionStats {
     pub fn new() -> Self {
         let total_handled_clients = 0u64;
-        let min_session_time_client = 0i64;
-        let max_session_time_client = 0i64;
-        let avg_session_time_client = 0i64;
+        let min_session_time_client = 0u128;
+        let max_session_time_client = 0u128;
+        let avg_session_time_client = 0u128;
 
         ServerConnectionStats {
             total_handled_clients,
@@ -27,7 +27,7 @@ impl ServerConnectionStats {
     }
 
     pub async fn update_stats_session_time_client(&mut self, client: &Client) {
-        let milliseconds = client.get_session_time().await.num_milliseconds();
+        let milliseconds = client.get_session_time().await.as_millis();
 
         if self.min_session_time_client == 0 {
             self.min_session_time_client = milliseconds;
