@@ -13,7 +13,7 @@ async fn main() -> std::io::Result<()> {
     let host = std::env::var("HOST").expect("HOST is invalid!");
     let port = std::env::var("PORT").expect("PORT is invalid!")
         .parse::<u16>()
-        .expect("PORT is not integer!");
+        .expect("PORT is not integer or big integer!");
 
     let config = web::Data::new(Config::new());
     let clone_config = Arc::clone(&config);
