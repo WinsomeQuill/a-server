@@ -49,7 +49,7 @@ pub async fn work(config: web::Data<Arc<Mutex<Config>>>, req: HttpRequest, mut p
 
     let total_time = Utc::now() - start_time;
     config.lock().await.update_stats_time_request(&client, total_time).await;
-    config.lock().await.remove_client(&client).await;
+    config.lock().await.close_request_client(&client).await;
 
     HttpResponse::Ok().json(
         Response::success(format!("Your result is {result}!"))

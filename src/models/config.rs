@@ -34,7 +34,7 @@ impl Config {
         Ok(())
     }
 
-    pub async fn remove_client(&mut self, client: &Client) {
+    pub async fn close_request_client(&mut self, client: &Client) {
         let index = self.active_clients
             .iter()
             .position(|x| x == client)
