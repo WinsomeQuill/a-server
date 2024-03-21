@@ -139,7 +139,7 @@ impl Config {
 
         println!("Client {} is disconnected!", client.address);
         println!("Requests: {total_requests}");
-        println!("Session time: {session_time}");
+        println!("Session time: {session_time} ms");
         client.print_stats_report().await;
         println!("\n");
     }

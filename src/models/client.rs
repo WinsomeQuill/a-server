@@ -57,9 +57,9 @@ impl Client {
         let max = connection_stats.max_processing_time;
         let avg = connection_stats.avg_processing_time;
 
-        println!("Max request time: {max}");
-        println!("Min request time: {min}");
-        println!("Avg request time: {avg}");
+        println!("Max request time: {max} ms");
+        println!("Min request time: {min} ms");
+        println!("Avg request time: {avg} ms");
     }
 }
 
