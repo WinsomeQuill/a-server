@@ -1,8 +1,8 @@
 use std::sync::Arc;
 use actix_web::{HttpRequest, HttpResponse, post, Responder, web};
 use actix_web::web::Payload;
-use chrono::Utc;
 use tokio::sync::Mutex;
+use tokio::time::Instant;
 use crate::models::client::Client;
 use crate::models::config::Config;
 use crate::models::dto::calculator_dto::CalculatorDto;
@@ -12,11 +12,15 @@ use crate::utils::utils::{calculating, generate_delay};
 
 #[post("/work")]
 pub async fn work(config: web::Data<Arc<Mutex<Config>>>, req: HttpRequest, mut payload: Payload) -> impl Responder {
-    let mut client = Client::new(req.peer_addr().unwrap().port().to_string());
+    let client = Client::new(req.peer_addr().unwrap().ip().to_string());
 
-    config.clone().lock().await.client_connect(client.clone()).await;
+    loop {
+        if config.clone().lock().await.try_client_connect(client.clone()).await {
+            break;
+        }
+    }
 
-    let start_time = Utc::now();
+    let start_time = Instant::now();
 
     config.lock().await.add_count_request(&client).await;
 
@@ -43,9 +47,9 @@ pub async fn work(config: web::Data<Arc<Mutex<Config>>>, req: HttpRequest, mut p
 
     generate_delay().await;
 
-    let total_time = Utc::now() - start_time;
+    let total_time = start_time.elapsed();
     config.lock().await.update_stats_time_request(&client, total_time).await;
-    config.lock().await.remove_client(&client).await;
+    config.lock().await.close_request_client(&client).await;
 
     HttpResponse::Ok().json(
         Response::success(format!("Your result is {result}!"))

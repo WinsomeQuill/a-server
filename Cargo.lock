@@ -4,13 +4,12 @@ version = 3
 
 [[package]]
 name = "a-server"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "actix-web",
  "chrono",
  "dotenv",
  "futures-util",
- "qstring",
  "rand",
  "serde",
  "serde_json",
@@ -894,15 +893,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e835ff2298f5721608eb1a980ecaee1aef2c132bf95ecc026a11b7bf3c01c02e"
 dependencies = [
  "unicode-ident",
-]
-
-[[package]]
-name = "qstring"
-version = "0.7.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d464fae65fff2680baf48019211ce37aaec0c78e9264c84a3e484717f965104e"
-dependencies = [
- "percent-encoding",
 ]
 
 [[package]]
